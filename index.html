@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>[Her Name] — Happy Birthday</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Caveat:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="ambient" id="ambient"></div>
+<div class="hearts-bg" id="heartsBg" aria-hidden="true"></div>
+
+<button type="button" class="back-to-flower" id="backToFlower" aria-label="Back to the flower">
+  <span class="arrow">←</span><span>back to the flower</span>
+</button>
+
+<button type="button" class="back-to-flower" id="backToLetter" aria-label="Back to the letter">
+  <span class="arrow">←</span><span>back to the letter</span>
+</button>
+
+<div class="wrap">
+  <div class="page page-1" id="page1">
+  <section class="stage" id="stageRose">
+    <div class="stage-visual">
+      <div class="rose-parallax" id="roseParallax">
+        <div class="frame-canvas-wrap" id="roseWrap">
+          <canvas id="roseCanvas"></canvas>
+          <div class="loader" id="loader">
+            <div class="loader-bar"><div class="loader-bar-fill" id="loaderFill"></div></div>
+            <div id="loaderLabel">LOADING ROSE — 0%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage-scrim" aria-hidden="true"></div>
+
+      <div class="stage-copy stage-copy-left" id="stageCopyLeft">
+        <div class="chapter" data-chapter="0">
+          <h2>Happy Birthday, Rhy!</h2>
+          <p>I made this little something for you, I hope you appreciate it</p>
+        </div>
+
+        <div class="chapter" data-chapter="2">
+          <h2>I miss you so much</h2>
+          <p>Lapit na scroll ka po, hehehe</p>
+        </div>
+      </div>
+
+      <div class="stage-copy stage-copy-right" id="stageCopyRight">
+        <div class="chapter" data-chapter="1">
+          <h2>Scroll po ikaw</h2>
+          <p>I prepared a little something for you at the bottom</p>
+        </div>
+      </div>
+
+      <div class="scroll-cue" id="scrollCue"><span class="arrow">↓</span><span class="msg">go ahead, scroll — watch it turn</span></div>
+
+      <div class="next-chapter-btn" id="nextBtnWrap">
+        <p class="hint">Click mo po ito baby ko</p>
+        <button type="button" class="continue-btn" id="continueBtn">
+          <span>Happy Birthday!!!</span><span class="arrow">→</span>
+        </button>
+      </div>
+    </div>
+  </section>
+  </div>
+
+  <div class="page page-2 is-hidden" id="page2">
+  <section class="stage stage--paper" id="stagePaper">
+    <div class="stage-visual">
+      <div class="frame-canvas-wrap" id="paperWrap">
+        <canvas id="paperCanvas"></canvas>
+        <div class="loader" id="loader2">
+          <div class="loader-bar"><div class="loader-bar-fill" id="loaderFill2"></div></div>
+          <div id="loaderLabel2">LOADING — 0%</div>
+        </div>
+      </div>
+
+      <div class="letter-overlay" id="letterOverlay">
+        <div class="letter-card">
+          <p class="letter-greeting">HII Rhyrhy,</p>
+          <p>I really don't know how to start this but first thing first I want to greet you, Happiest Birthday Rhy, sweet 16 kana (I'm kidding), but yeah Happy Birthday and I just want to say some few things to you.</p>
+          <p>I'm not really good at writing letters but trust me I really did my best to write this one, giving it a lot of thought and no, hindi ako gumamit ng tubig para dito sa letter na to (you know what that means HAHAHA) but yeah. I hope this day only brings you happiness and joy and I wish for it not only for this day.</p>
+          <p>We both have through a lot, arguments and fights, but on all of it, you still chose me and it is something I am so thankful, so thankful that I have someone who bears with me, understand me and forgive me. I really don't want to sneak in an apology here in this letter since this is supposed to be an appreciation one, but I am really sorry for all the things that I've been bad about, pagiging pasaway, salbahe and such. That's why I want to reciprocate all of that by trying my best and hardest to be the best version of myself that you can be proud of.</p>
+          <p>I hope ma-appreciate mo itong letter na ginawa ko, I actually want to make a physical one but I kind of want to do it my own way (you know like course ko Computer Science and that kind of embodies me so I create this letter while utilizing my knowledge sa course na yon and also my interests na rin). I hope that, even though this is such an informal letter (nag tataglish pa ako and such) na ma appreciate mo because just like you told me po na wag ma pressure, this is just me po and I am just being myself right now with this letter that I created. I really wish I was a poet who can tell you the words that I want to express in a more beautiful way but yeah.</p>
+          <p>I really wish wish wish you the Happiest Birthday and I really hope you achieve all of your dreams and you stay in good health, MORE BIRTHDAYS TO COMEEE</p>
+          <p class="letter-sign">Yours Always<br>Kenn</p>
+        </div>
+      </div>
+
+      <div class="next-chapter-btn" id="galleryBtnWrap">
+        <p class="hint">Isa pa po bago matapos</p>
+        <button type="button" class="continue-btn" id="galleryBtn">
+          <span>See Our Gallery</span><span class="arrow">→</span>
+        </button>
+      </div>
+    </div>
+  </section>
+  </div>
+
+  <div class="page page-3 is-hidden" id="page3">
+    <section class="stage stage--photobooth" id="stagePhotobooth">
+    <div class="stage-visual">
+      <div class="frame-canvas-wrap" id="photoboothWrap">
+        <canvas id="photoboothCanvas"></canvas>
+        <div class="loader" id="loader3">
+          <div class="loader-bar"><div class="loader-bar-fill" id="loaderFill3"></div></div>
+          <div id="loaderLabel3">LOADING — 0%</div>
+        </div>
+      </div>
+
+      <div class="scroll-cue" id="scrollCuePhotobooth"><span class="arrow">↓</span><span class="msg">keep scrolling</span></div>
+
+      <div class="gallery-overlay" id="galleryOverlay">
+        <div class="num">03 — GALLERY</div>
+        <h2>A Few of My Favorites</h2>
+        <p class="sub">[scroll horizontally to view our moments]</p>
+        
+        <div class="gallery-scroll-container" id="galleryGrid">
+  <div class="gallery-item" data-caption="[caption 1]">
+    <img src="Assets/Gallery/1.png" alt="[caption 1]" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+    <div class="fallback">❤</div>
+    <div class="cap">[caption 1]</div>
+  </div>
+  <div class="gallery-item" data-caption="[caption 2]">
+    <img src="Assets/Gallery/2.png" alt="[caption 2]" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+    <div class="fallback">❤</div>
+    <div class="cap">[caption 2]</div>
+  </div>
+  <div class="gallery-item" data-caption="[caption 3]">
+    <img src="Assets/Gallery/3.png" alt="[caption 3]" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+    <div class="fallback">❤</div>
+    <div class="cap">[caption 3]</div>
+  </div>
+  <div class="gallery-item" data-caption="[caption 4]">
+    <img src="Assets/Gallery/4.png" alt="[caption 4]" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+    <div class="fallback">❤</div>
+    <div class="cap">[caption 4]</div>
+  </div>
+  <div class="gallery-item" data-caption="[caption 5]">
+    <img src="Assets/Gallery/5.png" alt="[caption 5]" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+    <div class="fallback">❤</div>
+    <div class="cap">[caption 5]</div>
+  </div>
+  <div class="gallery-item" data-caption="[caption 6]">
+    <img src="Assets/Gallery/6.png" alt="[caption 6]" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+    <div class="fallback">❤</div>
+    <div class="cap">[caption 6]</div>
+  </div>
+</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="closing" id="closing">
+    <p>[Closing message — what you want her to feel or know, and anything you want to say directly to her here.]</p>
+    <div class="price-note">— [Your Name] · [Date]</div>
+  </section>
+
+  <footer id="siteFooter">
+    <span>[Your Name] ❤ [Her Name]</span>
+    <span>[a short line — a shared phrase, a date, a wish]</span>
+  </footer>
+  </div>
+
+</div>
+
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Close">✕</button>
+  <img src="" alt="" id="lightboxImg">
+  <div class="lightbox-cap" id="lightboxCap"></div>
+</div>
+
+<div class="paper-transition" id="paperTransition" aria-hidden="true">
+  <div class="sheet"></div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
