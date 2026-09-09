@@ -595,3 +595,62 @@
   roseSeq.load();
   updateRose();
 })();
+
+(function(){
+  // ---- closing section: "Click for surprise" floods the screen with a
+  // scattered burst of Kiss.png at random sizes/positions/rotations. ----
+  const surpriseBtn = document.getElementById('surpriseBtn');
+  const kissFlood = document.getElementById('kissFlood');
+  if (!surpriseBtn || !kissFlood) return;
+
+  const KISS_SRC = 'Assets/Kiss.png';
+  const KISS_COUNT = 55;
+
+  function buildFlood(){
+    // Rebuilding fresh elements each time (instead of reusing ones created
+    // on the first open) is what makes the pop-in animation replay on every
+    // open — a CSS animation with `forwards` only plays once per element,
+    // so reused elements would just sit there already "landed" on repeat
+    // opens. As a bonus, positions/timing get re-randomized each time too.
+    kissFlood.querySelectorAll('img').forEach((el) => el.remove());
+
+    const frag = document.createDocumentFragment();
+    for (let i = 0; i < KISS_COUNT; i++){
+      const img = document.createElement('img');
+      img.src = KISS_SRC;
+      img.alt = '';
+      img.draggable = false;
+
+      const size = 34 + Math.random() * 110;       // px
+      const left = Math.random() * 100;             // vw
+      const top = Math.random() * 100;               // vh
+      const rot = (Math.random() * 70 - 35).toFixed(1);
+      const delay = (Math.random() * 0.9).toFixed(2);
+      const dur = (0.5 + Math.random() * 0.4).toFixed(2);
+
+      img.style.width = size + 'px';
+      img.style.left = 'calc(' + left + 'vw - ' + (size / 2) + 'px)';
+      img.style.top = 'calc(' + top + 'vh - ' + (size / 2) + 'px)';
+      img.style.setProperty('--r', rot + 'deg');
+      img.style.setProperty('--delay', delay + 's');
+      img.style.setProperty('--dur', dur + 's');
+
+      frag.appendChild(img);
+    }
+    kissFlood.appendChild(frag);
+  }
+
+  function openFlood(){
+    buildFlood();
+    kissFlood.classList.add('is-open');
+    kissFlood.setAttribute('aria-hidden', 'false');
+  }
+  function closeFlood(){
+    kissFlood.classList.remove('is-open');
+    kissFlood.setAttribute('aria-hidden', 'true');
+  }
+
+  surpriseBtn.addEventListener('click', openFlood);
+  kissFlood.addEventListener('click', closeFlood);
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeFlood(); });
+})();

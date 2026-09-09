@@ -412,6 +412,67 @@
 
   .price-note{ margin-top: 1.6rem; font-size: 0.85rem; color: var(--ivory-dim); font-style: italic; }
 
+  /* ---------- SURPRISE BUTTON + KISS FLOOD ---------- */
+  .surprise-btn{
+    margin-top: 2.2rem;
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    padding: 0.9rem 1.9rem;
+    background: transparent;
+    border: 1px solid rgba(243,233,226,0.35);
+    color: var(--ivory);
+    font-family: 'Caveat', cursive;
+    font-weight: 600;
+    font-size: 1.5rem;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: background 0.25s ease, border-color 0.25s ease, transform 0.15s ease;
+  }
+  .surprise-btn:hover{ background: rgba(224,57,75,0.14); border-color: var(--crimson-bright); }
+  .surprise-btn:active{ transform: scale(0.96); }
+
+  .kiss-flood{
+    position: fixed; inset: 0; z-index: 980;
+    overflow: hidden;
+    background: rgba(8,5,5,0.35);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease, background 0.4s ease;
+  }
+  .kiss-flood.is-open{ opacity: 1; pointer-events: auto; cursor: pointer; }
+  .kiss-flood img{
+    position: absolute;
+    display: block;
+    opacity: 0;
+    pointer-events: none;
+    -webkit-user-drag: none;
+    user-select: none;
+    filter: drop-shadow(0 6px 14px rgba(0,0,0,0.4));
+    transform: scale(0.2) rotate(var(--r, 0deg)) translateY(16px);
+    animation: kiss-pop var(--dur, 0.6s) cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    animation-delay: var(--delay, 0s);
+  }
+  @keyframes kiss-pop{
+    0%{ opacity: 0; transform: scale(0.2) rotate(var(--r, 0deg)) translateY(16px); }
+    55%{ opacity: 1; }
+    100%{ opacity: 1; transform: scale(1) rotate(var(--r, 0deg)) translateY(0); }
+  }
+  .kiss-flood-hint{
+    position: absolute; left: 0; right: 0;
+    bottom: calc(4vh + env(safe-area-inset-bottom, 0px));
+    text-align: center;
+    font-family: 'Caveat', cursive; font-weight: 600; font-size: 1.1rem;
+    color: var(--ivory);
+    text-shadow: 0 2px 12px rgba(0,0,0,0.8);
+    opacity: 0;
+    transition: opacity 0.5s ease 0.6s;
+  }
+  .kiss-flood.is-open .kiss-flood-hint{ opacity: 0.85; }
+
+  @media (prefers-reduced-motion: reduce){
+    .kiss-flood img{ animation: none; opacity: 1; transform: scale(1) rotate(var(--r, 0deg)); }
+  }
+
   footer{
     padding: 4vh 7vw 5vh;
     display: flex; justify-content: space-between; align-items: center;
