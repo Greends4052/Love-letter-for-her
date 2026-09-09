@@ -484,6 +484,11 @@
        is more specific than `*`. */
     .kiss-flood img{
       animation: kiss-pop var(--dur, 0.6s) cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+      /* The shorthand above resets animation-delay to 0 for every property
+         it doesn't mention, which was wiping out each image's stagger —
+         they all "individually" animated, just all starting at once. This
+         explicit longhand, declared after it, restores the stagger. */
+      animation-delay: var(--delay, 0s) !important;
     }
   }
 
