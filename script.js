@@ -655,6 +655,12 @@
 
   function openFloodNow(){
     buildFlood();
+    // Force a synchronous layout here before revealing. Some mobile
+    // browsers (iOS Safari in particular) can silently skip the animation
+    // on elements that were inserted and revealed in the same tick — this
+    // guarantees the browser has registered their starting state first,
+    // so the pop-in plays reliably on phones, not just on desktop.
+    void kissFlood.offsetHeight;
     kissFlood.classList.add('is-open');
     kissFlood.setAttribute('aria-hidden', 'false');
   }

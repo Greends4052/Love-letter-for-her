@@ -470,7 +470,21 @@
   .kiss-flood.is-open .kiss-flood-hint{ opacity: 0.85; }
 
   @media (prefers-reduced-motion: reduce){
-    .kiss-flood img{ animation: none; opacity: 1; transform: scale(1) rotate(var(--r, 0deg)); }
+    /* Every other motion effect on the site is turned off for
+       reduced-motion below — but this pop-in is brief, self-contained,
+       and the actual surprise this button delivers, so it's deliberately
+       kept playing here. This also happens to be the fix for it going
+       missing specifically on phones: iOS Safari reports
+       prefers-reduced-motion: reduce automatically whenever Low Power
+       Mode is on, which is common on mobile and rare on desktop — so
+       without this override, the images would just appear all at once
+       with no animation, exactly like the symptom described. The rule
+       further down that kills all animation is !important too, so this
+       has to match that to still win — it does, since `.kiss-flood img`
+       is more specific than `*`. */
+    .kiss-flood img{
+      animation: kiss-pop var(--dur, 0.6s) cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+    }
   }
 
   footer{
