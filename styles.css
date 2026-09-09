@@ -430,6 +430,20 @@
     .stage-copy-right{ padding-right: 6vw; }
     .chapter{ padding: 6vw 4vw; }
     .next-chapter-btn{ max-width: 68vw; }
+
+    /* On mobile the button sat vertically centered on the right edge,
+       disconnected from the left-side text it follows on. Anchor it to
+       the bottom-left instead, under where that text column sits. */
+    #nextBtnWrap{
+      top: auto;
+      bottom: calc(4vh + env(safe-area-inset-bottom, 0px));
+      left: 6vw;
+      right: auto;
+      align-items: flex-start;
+      transform: translateY(10px);
+    }
+    #nextBtnWrap.is-visible{ transform: translateY(0); }
+    #nextBtnWrap .hint{ text-align: left; }
     .stage-scrim{
       background: linear-gradient(to right,
         rgba(8,5,5,0.82) 0%,

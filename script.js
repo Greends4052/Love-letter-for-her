@@ -358,6 +358,30 @@
 
   const galleryOverlay = document.getElementById('galleryOverlay');
 
+  // The photobooth canvas only needs to be resized when its wrapper's own
+  // box actually changes size (the is-shifted layout swap), not on every
+  // scroll tick — resize() reallocates the canvas backing store, which is
+  // expensive, so re-running it ~60x/sec while scrolling was the main
+  // source of jank in this section.
+  //
+  // Re-syncing used to happen purely on the CSS transition's 'transitionend'
+  // event, but that event can silently never fire: iOS Safari recalculates
+  // dvh mid-scroll (as the address bar collapses), which can cancel/restart
+  // the transition without a completion event, and prefers-reduced-motion
+  // skips the transition altogether. Either way the canvas backing store is
+  // left at its old (full-screen) resolution while the CSS box has already
+  // settled at its smaller shifted size — that mismatch is what stretches
+  // the frame. So resize on the state change itself (covers the no-motion
+  // case immediately) and again after the transition should have finished
+  // (covers the animated case), regardless of whether the event fired.
+  let photoboothShifted = false;
+  let shiftResizeTimer = null;
+  function scheduleShiftResize(){
+    photoboothSeq.resize();
+    if (shiftResizeTimer) clearTimeout(shiftResizeTimer);
+    shiftResizeTimer = setTimeout(() => { photoboothSeq.resize(); }, 850);
+  }
+
   function updatePhotobooth(){
     if (!photoboothUnlocked) return;
     const rect = stagePhotobooth.getBoundingClientRect();
@@ -370,24 +394,16 @@
     photoboothSeq.draw(frame);
 
     const holdReached = progress >= PHOTOBOOTH_TURN_FRACTION;
-    
+
     if (photoboothWrap) photoboothWrap.classList.toggle('is-shifted', holdReached);
     if (galleryOverlay) galleryOverlay.classList.toggle('is-ready', holdReached);
 
     if (scrollCuePhotobooth) scrollCuePhotobooth.classList.toggle('is-hidden', holdReached || progress > 0.02);
-  }
 
-  // The photobooth canvas only needs to be resized when its wrapper's own
-  // box actually changes size (the is-shifted layout swap), not on every
-  // scroll tick — resize() reallocates the canvas backing store, which is
-  // expensive, so re-running it ~60x/sec while scrolling was the main
-  // source of jank in this section. Re-sync once that CSS transition ends.
-  if (photoboothWrap){
-    photoboothWrap.addEventListener('transitionend', (e) => {
-      if (['width', 'height', 'left', 'top', 'transform'].includes(e.propertyName)){
-        photoboothSeq.resize();
-      }
-    });
+    if (holdReached !== photoboothShifted){
+      photoboothShifted = holdReached;
+      scheduleShiftResize();
+    }
   }
 
   const paperTransition = document.getElementById('paperTransition');
