@@ -606,6 +606,19 @@
   const KISS_SRC = 'Assets/Kiss.png';
   const KISS_COUNT = 55;
 
+  // Preload the asset once, in the background, so the flood never has to
+  // paint blank/broken images while the browser is still fetching it —
+  // on a slow mobile connection this is the difference between an instant
+  // reveal and a flash of empty squares. No spinner or loading text is
+  // shown either way; if the click happens before it's ready, we just wait
+  // silently and open the moment it is.
+  let kissReady = false;
+  let kissPending = false;
+  const kissPreload = new Image();
+  kissPreload.onload = () => { kissReady = true; if (kissPending){ kissPending = false; openFloodNow(); } };
+  kissPreload.onerror = () => { kissReady = true; if (kissPending){ kissPending = false; openFloodNow(); } }; // don't block forever on a bad path
+  kissPreload.src = KISS_SRC;
+
   function buildFlood(){
     // Rebuilding fresh elements each time (instead of reusing ones created
     // on the first open) is what makes the pop-in animation replay on every
@@ -617,7 +630,7 @@
     const frag = document.createDocumentFragment();
     for (let i = 0; i < KISS_COUNT; i++){
       const img = document.createElement('img');
-      img.src = KISS_SRC;
+      img.src = KISS_SRC; // already cached from the preload above — no extra fetch
       img.alt = '';
       img.draggable = false;
 
@@ -640,10 +653,22 @@
     kissFlood.appendChild(frag);
   }
 
-  function openFlood(){
+  function openFloodNow(){
     buildFlood();
     kissFlood.classList.add('is-open');
     kissFlood.setAttribute('aria-hidden', 'false');
+  }
+
+  function openFlood(){
+    if (kissReady){
+      openFloodNow();
+    } else {
+      // Kiss.png hasn't finished loading yet (rare — only on a very slow
+      // connection). Wait for it silently rather than opening on a blank
+      // flood; kissPreload's onload/onerror above will fire this the
+      // instant it's ready, same behavior on mobile and desktop.
+      kissPending = true;
+    }
   }
   function closeFlood(){
     kissFlood.classList.remove('is-open');
