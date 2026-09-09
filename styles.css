@@ -246,10 +246,18 @@
     display: flex; align-items: center; justify-content: center;
     padding: 6vh 6vw;
     opacity: 0;
+    /* Invisible (opacity:0) is not the same as inert: without this, the
+       full-size overlay — and the scrollable letter-card inside it — sat
+       on top of the canvas and silently swallowed every touch-scroll
+       gesture for the *entire* paper stage, not just once the letter was
+       actually revealed. That's what made the paper section feel "hard to
+       scroll" on mobile: most swipes landed on this invisible card, which
+       scrolled its own text instead of the page. */
+    pointer-events: none;
     transform: translateY(10px) scale(0.99);
     transition: opacity 1.3s ease, transform 1.3s ease;
   }
-  .letter-overlay.is-ready{ opacity: 1; transform: translateY(0) scale(1); }
+  .letter-overlay.is-ready{ opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); }
   .letter-card{
     width: 100%; max-width: 640px;
     max-height: 84vh;
@@ -432,18 +440,28 @@
     }
     .letter-card{ padding: 2.2rem 1.6rem; }
 
-    /* The letter card runs nearly full-width on mobile, so the gallery
-       button (normally vertically centered on the right edge) sits right
-       on top of the paragraph text there. Drop it to the bottom edge of
-       the stage instead, clear of the card. */
+    /* The letter card runs nearly full-width on mobile, and its height
+       depends on how much text is in it, so a fixed pixel/vh offset for
+       the button (the old approach here) can't reliably clear it. Instead,
+       let the button become a real in-flow sibling stacked below the card
+       — see the HTML, #galleryBtnWrap now lives inside #letterOverlay —
+       and trim the card's own max-height to guarantee room underneath.
+       This can never overlap regardless of how long the letter text is. */
+    .letter-overlay{
+      flex-direction: column;
+      gap: 1.1rem;
+      padding: 4vh 6vw;
+    }
+    .letter-card{ max-height: 60dvh; }
     #galleryBtnWrap{
-      top: auto;
-      bottom: calc(2.2vh + env(safe-area-inset-bottom, 0px));
-      right: 5vw;
-      max-width: 68vw;
+      position: static;
+      width: 100%;
+      max-width: 420px;
+      align-items: center;
       transform: translateY(10px);
     }
     #galleryBtnWrap.is-visible{ transform: translateY(0); }
+    #galleryBtnWrap .hint{ text-align: center; }
   }
 
   /* Narrow phones — the 52vw copy column above gets too tight for the
