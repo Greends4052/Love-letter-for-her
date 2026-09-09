@@ -57,6 +57,29 @@
 
   function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
 
+  // ---- scroll lock: while a stage's frame sequence is still preloading,
+  // there's nothing to scroll into yet, so block scrolling entirely until
+  // it finishes. Re-evaluated on every page switch against that page's own
+  // sequence, so a lock from one page never lingers on another. ----
+  let scrollLocked = false;
+  function lockScroll(){
+    if (scrollLocked) return;
+    scrollLocked = true;
+    document.documentElement.classList.add('is-scroll-locked');
+    document.body.classList.add('is-scroll-locked');
+  }
+  function unlockScroll(){
+    if (!scrollLocked) return;
+    scrollLocked = false;
+    document.documentElement.classList.remove('is-scroll-locked');
+    document.body.classList.remove('is-scroll-locked');
+  }
+  function preventScrollGesture(e){
+    if (scrollLocked) e.preventDefault();
+  }
+  window.addEventListener('wheel', preventScrollGesture, { passive: false });
+  window.addEventListener('touchmove', preventScrollGesture, { passive: false });
+
   function createSequence(opts){
     const frameCount = opts.frameCount;
     const images = new Array(frameCount + 1);
@@ -64,6 +87,7 @@
     let loadedCount = 0;
     let current = 1;
     let lastDrawn = null;
+    let doneLoading = false;
 
     const canvas = opts.canvas;
     const ctx = canvas.getContext('2d');
@@ -119,7 +143,10 @@
       loadedCount++;
       if (opts.onProgress) opts.onProgress(loadedCount, frameCount);
       if (i === current || loadedCount === 1) draw(current);
-      if (loadedCount === frameCount && opts.onDone) opts.onDone();
+      if (loadedCount === frameCount){
+        doneLoading = true;
+        if (opts.onDone) opts.onDone();
+      }
     }
 
     function load(){
@@ -137,7 +164,7 @@
       for (let c = 0; c < CONCURRENCY; c++) loadOne();
     }
 
-    return { resize, draw, load, frameCount };
+    return { resize, draw, load, frameCount, isDone: () => doneLoading };
   }
 
   const stageRose = document.getElementById('stageRose');
@@ -170,7 +197,12 @@
       loaderFill.style.width = pct + '%';
       loaderLabel.textContent = 'LOADING ROSE — ' + pct + '%';
     },
-    onDone(){ loader.classList.add('is-hidden'); }
+    onDone(){
+      loader.classList.add('is-hidden');
+      // page1 is declared further below but already assigned by the time
+      // this fires asynchronously, same pattern as the wobbleLoop check.
+      if (!page1.classList.contains('is-hidden')) unlockScroll();
+    }
   });
 
   let lastAmbientIndex = -1;
@@ -273,7 +305,10 @@
       loaderFill2.style.width = pct + '%';
       loaderLabel2.textContent = 'LOADING — ' + pct + '%';
     },
-    onDone(){ loader2.classList.add('is-hidden'); }
+    onDone(){
+      loader2.classList.add('is-hidden');
+      if (!page2.classList.contains('is-hidden')) unlockScroll();
+    }
   });
 
   function updatePaper(){
@@ -315,7 +350,10 @@
       loaderFill3.style.width = pct + '%';
       loaderLabel3.textContent = 'LOADING — ' + pct + '%';
     },
-    onDone(){ loader3.classList.add('is-hidden'); }
+    onDone(){
+      loader3.classList.add('is-hidden');
+      if (!page3.classList.contains('is-hidden')) unlockScroll();
+    }
   });
 
   const galleryOverlay = document.getElementById('galleryOverlay');
@@ -375,6 +413,7 @@
     paperSeq.resize();
     if (!paperLoaded){ paperLoaded = true; paperSeq.load(); }
     updatePaper();
+    if (paperSeq.isDone()) unlockScroll(); else lockScroll();
     if (backToFlower) backToFlower.classList.add('is-visible');
     if (backToLetter) backToLetter.classList.remove('is-visible');
   }
@@ -386,6 +425,7 @@
     window.scrollTo(0, 0);
     roseSeq.resize();
     updateRose();
+    if (roseSeq.isDone()) unlockScroll(); else lockScroll();
     if (backToFlower) backToFlower.classList.remove('is-visible');
     if (backToLetter) backToLetter.classList.remove('is-visible');
   }
@@ -399,6 +439,7 @@
     photoboothSeq.resize();
     if (!photoboothLoaded){ photoboothLoaded = true; photoboothSeq.load(); }
     updatePhotobooth();
+    if (photoboothSeq.isDone()) unlockScroll(); else lockScroll();
     if (backToFlower) backToFlower.classList.remove('is-visible');
     if (backToLetter) backToLetter.classList.add('is-visible');
   }
@@ -534,6 +575,7 @@
   window.addEventListener('orientationchange', () => handleViewportChange(250));
 
   resizeAll();
+  if (!roseSeq.isDone()) lockScroll();
   roseSeq.load();
   updateRose();
 })();

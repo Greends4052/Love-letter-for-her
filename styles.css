@@ -11,6 +11,10 @@
 
   *{ box-sizing: border-box; }
   html{ background: var(--bg); scroll-behavior: auto; overscroll-behavior-y: contain; }
+  /* Applied to <html> and <body> while a stage's frame sequence is still
+     preloading, so there's nothing to scroll into yet — see script.js. */
+  html.is-scroll-locked{ overflow: hidden; }
+  body.is-scroll-locked{ overflow: hidden; touch-action: none; overscroll-behavior: none; }
   body{
     margin:0;
     background:
@@ -427,6 +431,19 @@
         rgba(8,5,5,0.82) 100%);
     }
     .letter-card{ padding: 2.2rem 1.6rem; }
+
+    /* The letter card runs nearly full-width on mobile, so the gallery
+       button (normally vertically centered on the right edge) sits right
+       on top of the paragraph text there. Drop it to the bottom edge of
+       the stage instead, clear of the card. */
+    #galleryBtnWrap{
+      top: auto;
+      bottom: calc(2.2vh + env(safe-area-inset-bottom, 0px));
+      right: 5vw;
+      max-width: 68vw;
+      transform: translateY(10px);
+    }
+    #galleryBtnWrap.is-visible{ transform: translateY(0); }
   }
 
   /* Narrow phones — the 52vw copy column above gets too tight for the
