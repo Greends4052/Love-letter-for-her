@@ -446,6 +446,16 @@
     if (backToLetter) backToLetter.classList.remove('is-visible');
   }
 
+  let galleryImagesLoaded = false;
+  function loadGalleryImages(){
+    if (galleryImagesLoaded) return;
+    galleryImagesLoaded = true;
+    document.querySelectorAll('.gallery-item img[data-src]').forEach((img) => {
+      img.src = img.dataset.src;
+      img.removeAttribute('data-src');
+    });
+  }
+
   function showPage3(){
     page1.classList.add('is-hidden');
     page2.classList.add('is-hidden');
@@ -454,6 +464,7 @@
     photoboothUnlocked = true;
     photoboothSeq.resize();
     if (!photoboothLoaded){ photoboothLoaded = true; photoboothSeq.load(); }
+    loadGalleryImages();
     updatePhotobooth();
     if (photoboothSeq.isDone()) unlockScroll(); else lockScroll();
     if (backToFlower) backToFlower.classList.remove('is-visible');
